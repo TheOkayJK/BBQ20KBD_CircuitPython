@@ -18,39 +18,29 @@ from bbq20kbd import BasicMap
 kbd = Keyboard(usb_hid.devices)
 keyboard_layout = KeyboardLayoutUS(kbd)
 
-
-'''
-i2c = busio.I2C(board.SCL, board.SDA)
-device = I2CDevice(i2c, 0x33)
-'''
-
 # I think I need help figuring out the touch sensor.
 # This is a little above my level of knowledge
 # tp = Mouse(usb_hid.devices)
+# i2c = busio.I2C(board.SCL, board.SDA)
+# device = I2CDevice(i2c, 0x33)
 
 bbq = BBQ20kbd(True)
+# True is a place holder for a future tbd variable
 
-'''
-mods = ("mod1", "mod2", "Tog3", "Tog4", "Tog5", "Tog6")
+syms = ("SYM1", "SYM2")
 
-
-def getMods(mod):
-    if mod == "Tog1":
+def isSym(symcheck):
+    if symcheck == "SYM1":
+        bbq.setBacklight(False)
         return 1
-    elif mod == "Tog2":
+    elif symcheck == "SYM2":
+        bbq.setBacklight(False)
+        return 2
+    else:
         return 0
-    elif mod == "Tog3":
-        return 0
-    elif mod == "Tog4":
-        return 0
-    elif mod == "Tog5":
-        return 0
-    elif mod == "Tog6":
-        return 0
-'''
 
+bbq.setBacklight(True)
 async def keywatcher():
-    bbq.setBacklight(True)
     keys = bbq.keyLayout()
     oset = 0
     while True:
@@ -60,13 +50,20 @@ async def keywatcher():
             sequence = key.get_key()
             if key_event.pressed and sequence != "NULL":
                 print(sequence)
-                try:
-                    kbd.press(sequence)
-                except:
-                    combo = tuple(sequence[0:])
-                    kbd.press(*combo)
+                if sequence in syms and isSym(sequence) != oset:
+                    oset = isSym(sequence)
+                elif sequence == "SYM1" and oset == 1:
+                    oset = 0
+                elif sequence == "SYM2" and oset == 2:
+                    oset = 0
+                else:
+                    try:
+                        kbd.press(sequence)
+                    except:
+                        combo = tuple(sequence[0:])
+                        kbd.press(*combo)
             if key_event.released and sequence != "NULL":
-                # only if it wasn't keycode which was already released automatically
+                bbq.setBacklight(True)
                 try:
                     kbd.release(sequence)
                 except:
