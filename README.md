@@ -14,3 +14,5 @@ Feel free to use and adapt anything you see in this repo
 
 
 Better documentation incomming, I don't have time right now to write a detailed guide
+
+Info on keymap on this google sheet: https://docs.google.com/spreadsheets/d/1V6wzl5hoZVKiUgbZjhgLScIzLSIb70JbbKOf4PVcLEc/edit?usp=sharing
